@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "Obfuscator.h"
 
-#include "src/JsonObfuscator/OutputFileNames.h"
-
 namespace JsonObfuscator
 {
     Obfuscator::Obfuscator()
