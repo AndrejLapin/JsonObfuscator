@@ -6,7 +6,6 @@
 #include "src/JsonObfuscator/Utils.h"
 
 // argv[1] should be our target json path
-
 int main(int argc, char* argv[])
 {
     // check if file argument was provided
@@ -39,8 +38,8 @@ int main(int argc, char* argv[])
     json obfuscatedJson = obfuscator.GetObfuscatedJson();
     json replacementMap = obfuscator.GetReplacementMap();
 
-    JsonObfuscator::Utils::PrintJson(outputFileName, obfuscatedJson);
-    JsonObfuscator::Utils::PrintReplacementMap(outputMapFileName, replacementMap);
+    std::future<void> printJsonTask = std::async(std::launch::async, JsonObfuscator::Utils::PrintJson, outputFileName, obfuscatedJson, 2);
+    std::future<void> printMapTask = std::async(std::launch::async, JsonObfuscator::Utils::PrintReplacementMap, outputMapFileName, replacementMap);
 
     return 0;
 }
