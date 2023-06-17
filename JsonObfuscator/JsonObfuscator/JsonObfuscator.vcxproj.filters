@@ -21,6 +21,9 @@
     <ClCompile Include="src\JsonObfuscator\Obfuscator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\JsonObfuscator\Utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="vendor\nlohmann\json.hpp">
@@ -33,6 +36,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\JsonObfuscator\Obfuscator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\JsonObfuscator\Utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\JsonObfuscator\Include.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

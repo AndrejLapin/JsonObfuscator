@@ -1,7 +1,6 @@
 #pragma once
 
-#include "vendor/nlohmann/json.hpp"
-using json = nlohmann::json;
+#include "JsonObfuscator/Include.h"
 
 namespace JsonObfuscator
 {

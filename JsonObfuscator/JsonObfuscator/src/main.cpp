@@ -3,6 +3,7 @@
 
 #include "pch.h"
 #include "src/JsonObfuscator/Obfuscator.h"
+#include "src/JsonObfuscator/Utils.h"
 
 // argv[1] should be our target json path
 
@@ -18,7 +19,7 @@ int main(int argc, char* argv[])
     const std::string filePath(argv[1]);
     const std::string jsonExtension = ".json";
 
-    const std::size_t formatBeggining = filePath.find(jsonExtension);
+    const size_t formatBeggining = filePath.find(jsonExtension);
     if (formatBeggining == std::string::npos)
     {
         std::cout << "Incorrect file format. Fromat should be '.json'.\n";
@@ -27,23 +28,19 @@ int main(int argc, char* argv[])
     
     const std::string nameNoExtension = filePath.substr(0, formatBeggining);
     const std::string outputFileName = nameNoExtension + "-obfuscated" + jsonExtension;
-    const std::string outputMapFileName = nameNoExtension + "-replacement_map" + jsonExtension;
+    const std::string outputMapFileName = nameNoExtension + "-replacement_map";
 
     JsonObfuscator::Obfuscator obfuscator = JsonObfuscator::Obfuscator::Get();
     obfuscator.Obfuscate(filePath);
+    if (!obfuscator.ObfuscationSucceeded())
+    {
+        return 1;
+    }
     json obfuscatedJson = obfuscator.GetObfuscatedJson();
     json replacementMap = obfuscator.GetReplacementMap();
 
-    std::ofstream outputFile(outputFileName);
-    outputFile << obfuscatedJson.dump();
-    outputFile.close();
-
-    std::ofstream outputMapFile(outputMapFileName);
-    outputMapFile << replacementMap.dump();
-    outputMapFile.close();
-
-
-    // we can do the stuff here
+    JsonObfuscator::Utils::PrintJson(outputFileName, obfuscatedJson);
+    JsonObfuscator::Utils::PrintReplacementMap(outputMapFileName, replacementMap);
 
     return 0;
 }

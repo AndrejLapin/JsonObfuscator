@@ -147,10 +147,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\JsonObfuscator\Utils.cpp" />
     <ClCompile Include="src\JsonObfuscator\Obfuscator.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\JsonObfuscator\Include.h" />
+    <ClInclude Include="src\JsonObfuscator\Utils.h" />
     <ClInclude Include="src\JsonObfuscator\Obfuscator.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\JsonObfuscator\vendor\nlohmann\json.hpp" />
