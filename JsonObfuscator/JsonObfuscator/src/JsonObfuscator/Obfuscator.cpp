@@ -23,10 +23,8 @@ namespace JsonObfuscator
         m_ObfuscatedJson.clear();
         m_ReplacementMap.clear();
 
-        m_FilePath = filePath;
-
         json parsedData;
-        if (!ParseJsonFromFile(m_FilePath, parsedData))
+        if (!ParseJsonFromFile(filePath, parsedData))
         {
             m_ObfuscationFailed = true;
             return;

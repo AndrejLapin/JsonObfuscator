@@ -33,8 +33,6 @@ namespace JsonObfuscator
         bool ParseJsonFromFile(const std::string& filePath, json& data);
 
     private:
-        std::string m_FilePath;
-
         bool m_ObfuscationFailed;
         bool m_FileObfuscated;
 
