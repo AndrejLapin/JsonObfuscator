@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
     const std::string outputFileName = nameNoExtension + "-obfuscated" + jsonExtension;
     const std::string outputMapFileName = nameNoExtension + "-replacement_map";
 
-    JsonObfuscator::Obfuscator obfuscator = JsonObfuscator::Obfuscator::Get();
+    JsonObfuscator::Obfuscator obfuscator = JsonObfuscator::Obfuscator::Create();
     obfuscator.Obfuscate(filePath);
     if (!obfuscator.ObfuscationSucceeded())
     {
@@ -41,5 +41,6 @@ int main(int argc, char* argv[])
     std::future<void> printJsonTask = std::async(std::launch::async, JsonObfuscator::Utils::PrintJson, outputFileName, obfuscatedJson, 2);
     std::future<void> printMapTask = std::async(std::launch::async, JsonObfuscator::Utils::PrintReplacementMap, outputMapFileName, replacementMap);
 
+    std::cout << "Succesufully obfuscated json file.\n";
     return 0;
 }

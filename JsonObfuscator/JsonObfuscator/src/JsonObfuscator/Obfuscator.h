@@ -9,27 +9,47 @@ namespace JsonObfuscator
     class Obfuscator
     {
     public:
-        static Obfuscator Get();
+        /*
+        * Creates obfuscator on the stack
+        */
+        static Obfuscator Create();
 
+        /*
+        * Obfuscates json file at filePath
+        * and creates obfuscated json and replacement map json
+        */
         void Obfuscate(const std::string& filePath);
 
         bool ObfuscationSucceeded();
 
+        /*
+        * If ObfuscationSucceeded returns obfuscated json
+        */
         const json& GetObfuscatedJson();
+        /*
+        * If ObfuscationSucceeded returns replacement map json
+        */
         const json& GetReplacementMap();
 
     private:
-        Obfuscator();
+        Obfuscator(); // constuctor is private so we dont create it on the heap
 
         template <typename KeyType>
-        void ParseKeyValuePair(json& object, KeyType key, const json& value);
+        void SetKeyValuePair(json& object, KeyType key, const json& value);
+
+        /*
+        * converts input string to a sting of unicode escape sequences
+        * and fills replacement map with new obfuscation entries
+        */
+        std::string ObfuscateString(const std::string& input);
 
         json IterateObject(const json& data);
         json IterateArray(const json& data);
 
-        std::string ConvertToUnicode(const std::string& input);
-        std::string ConvertToHex(const std::string& input);
-
+        /*
+        * Parses json at filePath to data
+        * if succeeds returns true, if not - false
+        */
         bool ParseJsonFromFile(const std::string& filePath, json& data);
 
     private:
@@ -41,7 +61,7 @@ namespace JsonObfuscator
     };
 
     template<typename KeyType>
-    inline void Obfuscator::ParseKeyValuePair(json& object, KeyType key, const json& value)
+    inline void Obfuscator::SetKeyValuePair(json& object, KeyType key, const json& value)
     {
         if (value.is_object())
         {
@@ -53,7 +73,7 @@ namespace JsonObfuscator
         }
         else if (value.is_string())
         {
-            object[key] = ConvertToUnicode(value);
+            object[key] = ObfuscateString(value);
         }
         else
         {

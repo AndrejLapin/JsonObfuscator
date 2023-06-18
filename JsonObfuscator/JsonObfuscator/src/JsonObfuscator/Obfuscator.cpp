@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Obfuscator.h"
 
+#include "JsonObfuscator/Utils.h"
+
 namespace JsonObfuscator
 {
     Obfuscator::Obfuscator()
@@ -10,7 +12,7 @@ namespace JsonObfuscator
 
     }
 
-    Obfuscator Obfuscator::Get()
+    Obfuscator Obfuscator::Create()
     {
         return Obfuscator();
     }
@@ -52,13 +54,26 @@ namespace JsonObfuscator
         return m_ReplacementMap;
     }
 
+    std::string Obfuscator::ObfuscateString(const std::string& input)
+    {
+        auto obj = m_ReplacementMap.find(input);
+        // check if this replacement entry already exists
+        if (obj == m_ReplacementMap.end())
+        {
+            // creating new replacement entry
+            m_ReplacementMap[input] = Utils::ConvertToHex(input);
+        }
+
+        return Utils::ConvertToUnicode(input);
+    }
+
     json Obfuscator::IterateObject(const json& data)
     {
         json output;
         for (auto& [key, value] : data.items())
         {
-            const std::string unicodeKey = ConvertToUnicode(key);
-            ParseKeyValuePair(output, unicodeKey, value);
+            const std::string unicodeKey = ObfuscateString(key);
+            SetKeyValuePair(output, unicodeKey, value);
         }
         return output;
     }
@@ -69,39 +84,10 @@ namespace JsonObfuscator
         for (auto& [key, value] : data.items())
         {
             int index = std::stoi(key);
-            ParseKeyValuePair(output, index, value);
+            SetKeyValuePair(output, index, value);
         }
         return output;
     }
-
-    std::string Obfuscator::ConvertToUnicode(const std::string& input)
-    {
-        auto obj = m_ReplacementMap.find(input);
-        if (obj == m_ReplacementMap.end()) // new replacement key
-        {
-            m_ReplacementMap[input] = ConvertToHex(input);
-        }
-
-        std::stringstream output;
-        for (auto character : input)
-        {
-            unsigned int unicode = static_cast<unsigned int>(character);
-            output << "\\u" << std::setfill('0') << std::setw(4) << std::hex << unicode;
-        }
-        return output.str();
-    }
-
-    std::string Obfuscator::ConvertToHex(const std::string& input)
-    {
-        std::stringstream output;
-        for (auto character : input)
-        {
-            unsigned int hex = static_cast<unsigned int>(character);
-            output << "\\x" << std::hex << hex;
-        }
-        return output.str();
-    }
-
 
     bool Obfuscator::ParseJsonFromFile(const std::string& filePath, json& data)
     {
