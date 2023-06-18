@@ -24,6 +24,23 @@ namespace JsonObfuscator::Utils
         outputFile.close();
     }
 
+    void PrintJsonByLine(const std::string& filePath, json data, std::streamsize padding)
+    {
+        std::stringstream outputStream;
+        outputStream << std::setw(padding) << data;
+
+        std::ofstream outputFile(filePath);
+        std::string line;
+        while (getline(outputStream, line))
+        {
+            // when nlohmann::json gets printed in its entirety it adds additional escape sequence before '\'
+            // so we need to eliminate them here
+            JsonObfuscator::Utils::ReplaceAll(line, "\\\\u", "\\u");
+            outputFile << line << "\n";
+        }
+        outputFile.close();
+    }
+
     void PrintReplacementMap(const std::string& filePath, json data)
     {
         std::stringstream outputStream;
