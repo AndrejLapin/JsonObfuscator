@@ -12,7 +12,9 @@ namespace JsonObfuscator::Utils
     * Prints json to a file with correct unicode escape sequences
     */
     void PrintJson(const std::string& filePath, json data, std::streamsize padding = 2);
-
+    /*
+    *  Prints json to a file with correct unicode escape sequences line by line
+    */
     void PrintJsonByLine(const std::string& filePath, json data, std::streamsize padding = 2);
     /*
     * Prints out json root in a "<key> -> <value>" format
