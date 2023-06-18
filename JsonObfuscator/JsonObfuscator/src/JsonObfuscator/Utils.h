@@ -10,10 +10,13 @@ namespace JsonObfuscator::Utils
     void ReplaceAll(std::string& input, const std::string& search, const std::string& replace);
     /*
     * Prints json to a file with correct unicode escape sequences
+    * for this method the complexity is not linear
     */
     void PrintJson(const std::string& filePath, json data, std::streamsize padding = 2);
     /*
-    *  Prints json to a file with correct unicode escape sequences line by line
+    * Prints json to a file with correct unicode escape sequences line by line
+    * for this method the complexity is not linear, but is more performant than PrintJson
+    * because of how json files are structured
     */
     void PrintJsonByLine(const std::string& filePath, json data, std::streamsize padding = 2);
     /*
