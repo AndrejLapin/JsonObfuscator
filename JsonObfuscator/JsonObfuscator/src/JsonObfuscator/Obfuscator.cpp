@@ -29,7 +29,19 @@ namespace JsonObfuscator
             return;
         }
 
-        m_ObfuscatedJson = IterateObject(parsedData);
+        ObfuscateAndSetValue(m_ObfuscatedJson, parsedData);
+
+        m_State = State::OBFUSCATED_SUCCESSFULLY;
+    }
+
+    void Obfuscator::Obfuscate(const json& data)
+    {
+        m_State = State::OBFUSCATION_STARTED;
+
+        m_ObfuscatedJson.clear();
+        m_ReplacementMap.clear();
+
+        ObfuscateAndSetValue(m_ObfuscatedJson, data);
 
         m_State = State::OBFUSCATED_SUCCESSFULLY;
     }
@@ -44,6 +56,26 @@ namespace JsonObfuscator
     {
         assert(GetObfuscationState() == State::OBFUSCATED_SUCCESSFULLY);
         return m_ReplacementMap;
+    }
+
+    void Obfuscator::ObfuscateAndSetValue(json::reference& object, const json& value)
+    {
+        if (value.is_object())
+        {
+            object = IterateObject(value);
+        }
+        else if (value.is_array())
+        {
+            object = IterateArray(value);
+        }
+        else if (value.is_string())
+        {
+            object = ObfuscateString(value);
+        }
+        else
+        {
+            object = value;
+        }
     }
 
     std::string Obfuscator::ObfuscateString(const std::string& input)
@@ -65,7 +97,7 @@ namespace JsonObfuscator
         for (auto& [key, value] : data.items())
         {
             const std::string unicodeKey = ObfuscateString(key);
-            SetKeyValuePair(output, unicodeKey, value);
+            ObfuscateAndSetValue(output[unicodeKey], value);
         }
         return output;
     }
@@ -76,7 +108,7 @@ namespace JsonObfuscator
         for (auto& [key, value] : data.items())
         {
             int index = std::stoi(key);
-            SetKeyValuePair(output, index, value);
+            ObfuscateAndSetValue(output[index], value);
         }
         return output;
     }

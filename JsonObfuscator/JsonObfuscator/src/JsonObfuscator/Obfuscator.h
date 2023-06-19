@@ -28,6 +28,7 @@ namespace JsonObfuscator
         * and creates obfuscated json and replacement map json
         */
         void Obfuscate(const std::string& filePath);
+        void Obfuscate(const json& data);
 
         inline State GetObfuscationState() { return m_State; }
 
@@ -43,8 +44,7 @@ namespace JsonObfuscator
     private:
         Obfuscator(); // constuctor is private so we dont create it on the heap
 
-        template <typename KeyType>
-        void SetKeyValuePair(json& object, KeyType key, const json& value);
+        void ObfuscateAndSetValue(json::reference& object, const json& value);
 
         /*
         * converts input string to a sting of unicode escape sequences
@@ -67,25 +67,4 @@ namespace JsonObfuscator
         json m_ObfuscatedJson;
         json m_ReplacementMap;
     };
-
-    template<typename KeyType>
-    inline void Obfuscator::SetKeyValuePair(json& object, KeyType key, const json& value)
-    {
-        if (value.is_object())
-        {
-            object[key] = IterateObject(value);
-        }
-        else if (value.is_array())
-        {
-            object[key] = IterateArray(value);
-        }
-        else if (value.is_string())
-        {
-            object[key] = ObfuscateString(value);
-        }
-        else
-        {
-            object[key] = value;
-        }
-    }
 }
