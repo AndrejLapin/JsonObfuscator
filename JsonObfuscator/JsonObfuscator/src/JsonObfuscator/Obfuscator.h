@@ -9,6 +9,15 @@ namespace JsonObfuscator
     class Obfuscator
     {
     public:
+        enum class State
+        {
+            NONE,
+            OBFUSCATION_STARTED,
+            FILE_NOT_FOUND,
+            INVALID_JSON,
+            OBFUSCATED_SUCCESSFULLY
+        };
+    public:
         /*
         * Creates obfuscator on the stack
         */
@@ -20,7 +29,7 @@ namespace JsonObfuscator
         */
         void Obfuscate(const std::string& filePath);
 
-        bool ObfuscationSucceeded();
+        State GetObfuscationState();
 
         /*
         * If ObfuscationSucceeded returns obfuscated json
@@ -53,6 +62,7 @@ namespace JsonObfuscator
         bool ParseJsonFromFile(const std::string& filePath, json& data);
 
     private:
+        State m_State;
         bool m_ObfuscationFailed;
         bool m_FileObfuscated;
 

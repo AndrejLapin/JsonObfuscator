@@ -6,7 +6,8 @@
 namespace JsonObfuscator
 {
     Obfuscator::Obfuscator()
-        :m_ObfuscationFailed(false)
+        :m_State(State::NONE)
+        ,m_ObfuscationFailed(false)
         ,m_FileObfuscated(false)
     {
 
@@ -22,6 +23,8 @@ namespace JsonObfuscator
         m_ObfuscationFailed = false;
         m_FileObfuscated = false;
 
+        m_State = State::OBFUSCATION_STARTED;
+
         m_ObfuscatedJson.clear();
         m_ReplacementMap.clear();
 
@@ -35,22 +38,24 @@ namespace JsonObfuscator
         m_ObfuscatedJson = IterateObject(parsedData);
 
         m_FileObfuscated = true;
+
+        m_State = State::OBFUSCATED_SUCCESSFULLY;
     }
 
-    bool Obfuscator::ObfuscationSucceeded()
+    Obfuscator::State Obfuscator::GetObfuscationState()
     {
-        return !m_ObfuscationFailed && m_FileObfuscated;
+        return m_State;
     }
 
     const json& Obfuscator::GetObfuscatedJson()
     {
-        assert(ObfuscationSucceeded());
+        assert(GetObfuscationState() == State::OBFUSCATED_SUCCESSFULLY);
         return m_ObfuscatedJson;
     }
 
     const json& Obfuscator::GetReplacementMap()
     {
-        assert(ObfuscationSucceeded());
+        assert(GetObfuscationState() == State::OBFUSCATED_SUCCESSFULLY);
         return m_ReplacementMap;
     }
 
@@ -94,14 +99,14 @@ namespace JsonObfuscator
         std::ifstream targetFile(filePath);
         if (!targetFile.is_open())
         {
-            std::cout << "File " << filePath << " couldn't be found.\n";
+            m_State = State::FILE_NOT_FOUND;
             return false;
         }
 
         data = json::parse(targetFile, nullptr, false);
         if (data.is_discarded())
         {
-            std::cout << "File " << filePath << " is not a valid json.\n";
+            m_State = State::INVALID_JSON;
             return false;
         }
 

@@ -5,6 +5,8 @@
 #include "src/JsonObfuscator/Obfuscator.h"
 #include "src/JsonObfuscator/Utils.h"
 
+using Obfuscator = JsonObfuscator::Obfuscator;
+
 // argv[1] should be our target json path
 int main(int argc, char* argv[])
 {
@@ -29,11 +31,29 @@ int main(int argc, char* argv[])
     const std::string outputFileName = nameNoExtension + "-obfuscated" + jsonExtension;
     const std::string outputMapFileName = nameNoExtension + "-replacement_map";
 
-    JsonObfuscator::Obfuscator obfuscator = JsonObfuscator::Obfuscator::Create();
+    Obfuscator obfuscator = Obfuscator::Create();
     obfuscator.Obfuscate(filePath);
-    if (!obfuscator.ObfuscationSucceeded())
+    switch (obfuscator.GetObfuscationState())
     {
+    case Obfuscator::State::OBFUSCATED_SUCCESSFULLY:
+    {
+        std::cout << "Succesufully obfuscated json file.\n";
+    }break;
+    case Obfuscator::State::FILE_NOT_FOUND:
+    {
+        std::cout << "File " << filePath << " couldn't be found.\n";
         return 1;
+    }
+    case Obfuscator::State::INVALID_JSON:
+    {
+        std::cout << "File " << filePath << " is not a valid json.\n";
+        return 1;
+    }
+    default:
+    {
+        std::cout << "Unexpected error has occured!\n";
+        return 1;
+    }
     }
     json obfuscatedJson = obfuscator.GetObfuscatedJson();
     json replacementMap = obfuscator.GetReplacementMap();
@@ -41,6 +61,5 @@ int main(int argc, char* argv[])
     std::future<void> printJsonTask = std::async(std::launch::async, JsonObfuscator::Utils::PrintJsonByLine, outputFileName, obfuscatedJson, 2);
     std::future<void> printMapTask = std::async(std::launch::async, JsonObfuscator::Utils::PrintReplacementMap, outputMapFileName, replacementMap);
 
-    std::cout << "Succesufully obfuscated json file.\n";
     return 0;
 }
