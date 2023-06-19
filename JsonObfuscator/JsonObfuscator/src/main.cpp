@@ -51,7 +51,7 @@ int main(int argc, char* argv[])
     }
     default:
     {
-        std::cout << "Unexpected error has occured!\n";
+        std::cout << "An unexpected error has occured!\n";
         return 1;
     }
     }

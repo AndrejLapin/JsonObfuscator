@@ -7,8 +7,6 @@ namespace JsonObfuscator
 {
     Obfuscator::Obfuscator()
         :m_State(State::NONE)
-        ,m_ObfuscationFailed(false)
-        ,m_FileObfuscated(false)
     {
 
     }
@@ -20,9 +18,6 @@ namespace JsonObfuscator
 
     void Obfuscator::Obfuscate(const std::string& filePath)
     {
-        m_ObfuscationFailed = false;
-        m_FileObfuscated = false;
-
         m_State = State::OBFUSCATION_STARTED;
 
         m_ObfuscatedJson.clear();
@@ -31,20 +26,12 @@ namespace JsonObfuscator
         json parsedData;
         if (!ParseJsonFromFile(filePath, parsedData))
         {
-            m_ObfuscationFailed = true;
             return;
         }
 
         m_ObfuscatedJson = IterateObject(parsedData);
 
-        m_FileObfuscated = true;
-
         m_State = State::OBFUSCATED_SUCCESSFULLY;
-    }
-
-    Obfuscator::State Obfuscator::GetObfuscationState()
-    {
-        return m_State;
     }
 
     const json& Obfuscator::GetObfuscatedJson()

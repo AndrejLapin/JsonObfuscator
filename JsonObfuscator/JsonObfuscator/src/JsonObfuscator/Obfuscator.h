@@ -29,7 +29,7 @@ namespace JsonObfuscator
         */
         void Obfuscate(const std::string& filePath);
 
-        State GetObfuscationState();
+        inline State GetObfuscationState() { return m_State; }
 
         /*
         * If ObfuscationSucceeded returns obfuscated json
@@ -63,8 +63,6 @@ namespace JsonObfuscator
 
     private:
         State m_State;
-        bool m_ObfuscationFailed;
-        bool m_FileObfuscated;
 
         json m_ObfuscatedJson;
         json m_ReplacementMap;
