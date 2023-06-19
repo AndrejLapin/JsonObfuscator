@@ -14,7 +14,7 @@ namespace JsonObfuscator::Utils
         return true;
     }
 
-    void ReplaceAll_V(std::string& input, const std::string& search, const std::string& replace)
+    void ReplaceAll(std::string& input, const std::string& search, const std::string& replace)
     {
         for (unsigned int index = 0; index < input.length(); ++index)
         {
@@ -26,21 +26,12 @@ namespace JsonObfuscator::Utils
         }
     }
 
-    void ReplaceAll(std::string& input, const std::string& search, const std::string& replace)
-    {
-        size_t pos;
-        while ((pos = input.find(search)) != std::string::npos)
-        {
-            input.replace(pos, search.length(), replace);
-        }
-    }
-
     void PrintJson(const std::string& filePath, json data, std::streamsize padding)
     {
         std::string outputString = GetFormatedJsonString(data, padding);
         // when nlohmann::json gets printed in its entirety it adds additional escape sequence before '\'
         // so we need to eliminate them here
-        JsonObfuscator::Utils::ReplaceAll_V(outputString, "\\\\u", "\\u");
+        JsonObfuscator::Utils::ReplaceAll(outputString, "\\\\u", "\\u");
 
         std::ofstream outputFile(filePath);
         outputFile << outputString;
@@ -58,7 +49,7 @@ namespace JsonObfuscator::Utils
         {
             // when nlohmann::json gets printed in its entirety it adds additional escape sequence before '\'
             // so we need to eliminate them here
-            JsonObfuscator::Utils::ReplaceAll_V(line, "\\\\u", "\\u");
+            JsonObfuscator::Utils::ReplaceAll(line, "\\\\u", "\\u");
             outputFile << line << "\n";
         }
         outputFile.close();

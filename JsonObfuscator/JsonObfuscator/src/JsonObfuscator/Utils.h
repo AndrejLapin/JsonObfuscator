@@ -4,7 +4,6 @@
 
 namespace JsonObfuscator::Utils
 {
-    void ReplaceAll_V(std::string& input, const std::string& search, const std::string& replace);
     /*
     * Replaces all substrings with a replacement string
     */
